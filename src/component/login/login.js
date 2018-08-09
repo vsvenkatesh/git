@@ -1,6 +1,9 @@
 
 import React from 'react';
+//import ReactDOM from 'react-dom';
+import Home from '../Home';
 import '../App.css';
+import { BrowserRouter, Link, Route } from 'react-router-dom';
 
 
 class LoginForm extends React.Component {
@@ -13,7 +16,7 @@ var component = this
     let password = this.refs.password.value
     localStorage.setItem("test", username); 
       var data = {"username": username,
-    "password": password};
+    "password": "456"};
   fetch( "http://localhost:3000/login", {
     method: 'POST',
     headers: {
@@ -56,8 +59,9 @@ component.props.onSignIn(username)
       <div id="parent">
       <div id="new">
       <form onSubmit={this.handleSignIn.bind(this)}>
-      <center><h3 id="txt"><font color="white">Sign in</font></h3></center>     
-        <center><input type="text" id="txtbox" ref="username" placeholder="username" /></center>
+      <center><h3 id="txt"><font color="white">Sign in</font></h3></center>
+      
+        <center><input type="text" id="txtboxuser" ref="username" placeholder="username" /></center>
         <center><input type="password" id="txtbox2" ref="password" placeholder="password" /></center>
          <center><p class="f1">Forgot:<a href="#">Username/Password?</a></p></center>
         <center><button class="button">sign in</button></center>

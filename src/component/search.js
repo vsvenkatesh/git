@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
 import Gallery from "react-grid-gallery";
+import ReactDOM from "react-dom";
 
 const Welcome = ({ onSignOut }) => {
   var test = localStorage.getItem("test");
@@ -16,6 +17,7 @@ const Welcome = ({ onSignOut }) => {
     </div>
   );
 };
+
 
 class Gallery1 extends React.Component {
   renderImage(imageUrl) {
@@ -62,7 +64,8 @@ class search extends Component {
     super(props);
     this.state = {
       term: "",
-      final: ""
+      final: "",
+      table: ""
     };
   }
 
@@ -104,6 +107,39 @@ class search extends Component {
     localStorage.clear();
   }
 
+  gonext() {
+    const component = this; 
+    var data = {
+      username: "venkatesh",
+      password: "456"
+    };
+    fetch("http://localhost:3004/table", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    }).then(function(response) {
+      return response.json().then(function(body) {
+        if (body == "") {
+          console.log("No results found in table!!!");
+        } else {
+          console.log("Goteddddd values in table!!!");
+          console.log("bodey is",body);
+        }
+        component.setState({
+          table: body
+        });
+      });
+    });
+
+this.props.history.push({
+            pathname: "/table/0",
+            table: this.state.table
+          })
+
+  }
+
   render() {
     var example = [];
     var val = this.props.location.fifa
@@ -118,6 +154,7 @@ class search extends Component {
       <div className="finalone">
         <div className="fifa">
           <Welcome onSignOut={this.signOut.bind(this)} />
+          <button className="newbutts" onClick={this.gonext.bind(this)}>ADD</button>
           <form onSubmit={this.handleSignIn.bind(this)}>
             <center>
               <input
@@ -131,6 +168,7 @@ class search extends Component {
               <button class="button">Search</button>
             </center>
           </form>
+          
           <div className="searching">
             <Gallery1 imageUrls={example} />
           </div>

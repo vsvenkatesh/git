@@ -66,6 +66,66 @@ const Welcome = ({ fifa, onSignOut }) => {
   // });
 };
 
+
+const session = ({ fifa, onSignOut }) => {
+  //   var test2 = localStorage.getItem("session2");
+  // var objc = JSON.parse(test2);
+  // var final = objc[0];
+  // console.log("object is",final);
+  // var movies = JSON.parse(test2);
+  var test = localStorage.getItem("test");
+  /// let array = [];
+  // array=finals[i];
+  // localStorage.setItem("testing", array);
+  // }
+  // var array = localStorage.getItem("testing")
+  //         let images = array.map(image => {
+  //            return <img key={image} src={image} alt="" className="img-responsive" />
+  //         });
+  // }
+  //   This is a dumb "stateless" component
+  //   var test33 = localStorage.getItem("images");
+  //   var len=test33.length;
+  //   var name=new Array();
+  // name[len];
+  // for(var i=0;i<len;i++)
+  // {
+  // var name = test33[i].location;
+  // console.log("location are are",name);
+  // }
+  //   console.log("another location are are",finals);
+  //   var unr="http://localhost:4000/public/images/xman.jpg";
+  return (
+    <div className="hello">
+      Hello <strong>{test}</strong> !!!/<a
+        id="hr"
+        href="javascript:;"
+        onClick={onSignOut}
+      >
+        Sign out
+      </a>
+    </div>
+  );
+
+  // var Hello = React.createClass({
+  // render: function() {
+  //   <img src="http://localhost:4000/public/images/xman.jpg" />
+  //   var names = ['Jake', 'Jon', 'Thruster'];
+  //   return (
+  //   <div className="hello">
+  //             <ul>
+  //                     {names.map(function(name, index){
+  //                     return <li key={ index }>{name}</li>;
+  //                   })}
+  //             </ul>
+
+  //     </div>
+
+  //   )
+  // }
+  // });
+};
+
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -120,6 +180,13 @@ class Home extends Component {
     this.props.history.push("/");
     localStorage.clear();
   }
+  gonext() {
+
+this.props.history.push({
+            pathname: "/table/0",
+            table: this.state.table
+          })
+  }
 
   render() {
     return (
@@ -139,6 +206,7 @@ class Home extends Component {
             //test={this.props.location.test}
           />
         )}
+        <button className="add"onClick={this.gonext.bind(this)}>ADD</button>
         <div id="Search">
           <form onSubmit={this.handleSignIn.bind(this)}>
             <center>
@@ -152,7 +220,11 @@ class Home extends Component {
             <center>
               <button class="button">Search</button>
             </center>
+<session
+           onSignOut={this.signOut.bind(this)} 
+           />
           </form>
+          
         </div>
       </div>
     );
