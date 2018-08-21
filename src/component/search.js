@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./App.css";
 import Gallery from "react-grid-gallery";
 import ReactDOM from "react-dom";
+import tableicon from './tableicon.svg';
 
 const Welcome = ({ onSignOut }) => {
   var test = localStorage.getItem("test");
@@ -134,7 +135,7 @@ class search extends Component {
     });
 
 this.props.history.push({
-            pathname: "/table/0",
+            pathname: "/add-imagess/imgs/1",
             table: this.state.table
           })
 
@@ -154,7 +155,7 @@ this.props.history.push({
       <div className="finalone">
         <div className="fifa">
           <Welcome onSignOut={this.signOut.bind(this)} />
-          <button className="newbutts" onClick={this.gonext.bind(this)}>ADD</button>
+          <button onClick={this.gonext.bind(this)} className="buttable">Table</button>
           <form onSubmit={this.handleSignIn.bind(this)}>
             <center>
               <input

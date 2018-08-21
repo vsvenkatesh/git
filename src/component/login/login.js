@@ -1,12 +1,28 @@
-
-import React from 'react';
-//import ReactDOM from 'react-dom';
-import Home from '../Home';
-import '../App.css';
-import { BrowserRouter, Link, Route } from 'react-router-dom';
+import React, { Component } from "react";
+import "../App.css";
+import ReactDOM from "react-dom";
+import {render} from "react-dom";
+import {withRouter} from "react-router-dom";
 
 
 class LoginForm extends React.Component {
+
+constructor() {
+super()
+this.state = {
+      clk: null
+    }
+
+}
+togglesignup() {
+
+  this.setState({
+      clk: "username"
+    })
+  this.props.onSignup(this.state.clk)
+    
+  }
+
 
   handleSignIn(e) {
 var component = this
@@ -16,7 +32,7 @@ var component = this
     let password = this.refs.password.value
     localStorage.setItem("test", username); 
       var data = {"username": username,
-    "password": "456"};
+    "password": password};
   fetch( "http://localhost:3000/login", {
     method: 'POST',
     headers: {
@@ -54,19 +70,35 @@ component.props.onSignIn(username)
     
   }  
 
+
+
+  signOut() {
+    this.props.history.push("/Home");
+  }
+ 
+
+
   render() {
     return (
+
+
+      
+     
       <div id="parent">
+
+
       <div id="new">
       <form onSubmit={this.handleSignIn.bind(this)}>
       <center><h3 id="txt"><font color="white">Sign in</font></h3></center>
-      
         <center><input type="text" id="txtboxuser" ref="username" placeholder="username" /></center>
         <center><input type="password" id="txtbox2" ref="password" placeholder="password" /></center>
          <center><p class="f1">Forgot:<a href="#">Username/Password?</a></p></center>
-        <center><button class="button">sign in</button></center>
-      </form>
-      </div>
+        <center><button class="buttonsignin">sign in</button></center>
+        </form>
+      <p id="para">or</p>
+        <button className="signupbutt" onClick={this.togglesignup.bind(this)}>SignUp</button>
+        
+     </div>
       </div>
       
     )
@@ -74,22 +106,35 @@ component.props.onSignIn(username)
 }
 
 
+
+
+
  
 
 
 
-class App extends React.Component {
+class login extends React.Component {
   
   constructor(props) {
 
     super(props)
    
     this.state = {
-      user: null
+      user: null,
+      news: null
     }
 
   }
   
+  signup(clk) {
+
+this.setState({
+      news: {
+        clk
+      }
+    })
+
+  }
   
   signIn(username, password) {
    
@@ -111,6 +156,14 @@ class App extends React.Component {
       
         { 
 
+          (this.state.news) ? 
+            
+          this.props.history.push({
+            pathname: "/signup",
+            user:this.state.news
+          })
+          :
+
           (this.state.user) ? 
             
           this.props.history.push({
@@ -120,6 +173,7 @@ class App extends React.Component {
           :
             <LoginForm 
              onSignIn={this.signIn.bind(this)} 
+             onSignup={this.signup.bind(this)}
             />
         }
         
@@ -129,4 +183,4 @@ class App extends React.Component {
   }
   
 }
-export default App;
+export default login;

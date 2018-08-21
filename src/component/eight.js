@@ -2,6 +2,14 @@ import React, { Component } from "react";
 import "./App.css";
 import ReactDOM from "react-dom";
 import {render} from "react-dom";
+import icon1 from './icon1.png';
+import trash from './trash.png';
+import save from './save.png';
+import add from './add.png';
+import trash2 from './trash2.png';
+import saveicon from './saveicon.svg';
+import editicon from './editicon.svg';
+import deleteicon from './deleteicon.svg';
 
 
 
@@ -22,14 +30,70 @@ class Welcome extends React.Component {
 
 
 
+class Popup extends React.Component {
 
-export default class eight extends Component {
+handleSignIn(number) { 
+    const component = this; 
+    console.log(number);   
+    let tags = this.refs.tags.value
+    let category=this.refs.category.value
+    let images=this.refs.images.value
+    console.log("tags",tags);
+
+    var img = {
+      tags: tags,
+      category: category,
+      images: images
+    };
+    fetch("http://localhost:3008/Insert", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(img)
+    }).then(function(response) {      
+    });
+   
+   window.location.reload();
+
+  }
+
+  render() {
+    return (
+      <div className='popup'>
+        <div className='popup_inner'>
+         <input type="text" ref="tags" placeholder="tags" id="popup_class" name="name" />
+        <input type="text" ref="category" placeholder="category" id="popup_class" name="name" />
+        <input type="text" ref="images" placeholder="image" id="popup_class" name="name" />
+         <button id="popup_bt1" onClick={this.handleSignIn.bind(this)}>Insert</button>
+        <button id="popup_bt2" onClick={this.props.closePopup}>close</button>
+        </div>
+      </div>
+    );
+  }
+}
+
+
+
+
+
+
+
+export default class table extends Component {
   constructor(props) {
     super(props);
     this.state = {
       term: "",
-      final: ""
+      final: "",
+      count:"",
+      showPopup: false
     };
+  }
+
+  togglePopup() {
+    this.setState({
+      showPopup: !this.state.showPopup
+    });
   }
 
   componentWillMount() {
@@ -60,27 +124,59 @@ export default class eight extends Component {
     });
    }
 
+componentDidMount() {
+
+  const component = this; 
+    var val="some"
+      var data = {
+      username: "venkatesh",
+      password: val
+    };
+    fetch("http://localhost:3006/total", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    }).then(function(response) {
+      return response.json().then(function(body) {
+        if (body == "") {
+          console.log("No results found in table!!!");
+        } else {
+          console.log("Goteddddd values in table!!!");
+          console.log("bodey is",body);
+        }
+        component.setState({
+          count: body
+        });
+      });
+    });
+
+}
+   
 
   signOut() {
     this.props.history.push("/");
     localStorage.clear();
   }
 
-
-  gonext() {
+  goback() {
 this.props.history.push({
             pathname: "/add-imagess/iamg/80",
             table: this.state.table
           })
 
   }
-  goback() {
+
+
+  gonext() {
 this.props.history.push({
             pathname: "/add-imagess/img/60",
             table: this.state.table
           })
 
   }
+
   goback2() {
 this.props.history.push({
             pathname: "/add-images/img/50",
@@ -132,11 +228,62 @@ this.props.history.push({
   }
  
 
+ changeid(number) {
+
+console.log("now the id is",number);
+
+
+this.props.history.push({
+            pathname: "/add-imagese/imgs/"+number,
+            table: this.state.table
+          })
+
+
+ }
+ 
+
   render() {
      var val = this.props.location.table
       ? this.props.location.table
       : this.state.term;
-    console.log("val is ",val);
+      var total = this.props.location.table
+      ? this.props.location.table
+      : this.state.count;
+    console.log("the big count is ",total);
+    var test=total[0];
+    if(test){
+          console.log("test is ",test.count);
+          var pageno=( test.count/ val.length);
+console.log("pageno is",Math.ceil(pageno));
+var pageNumbers=[]
+console.log("length is",val.length);
+
+for (let i = 1; i <= Math.ceil(test.count/ 10); i++) {
+          pageNumbers.push(i);
+        } 
+
+        console.log("i is",pageNumbers);
+ } 
+
+var renderPageNumbers
+    pageNumbers ? 
+
+        renderPageNumbers = pageNumbers.map(number => {
+          return (
+            <li
+              key={number}
+              id={number}
+               onClick={()=>{this.changeid(number)}}
+            >
+              {number}
+            </li>
+          );
+            })
+            : null
+
+
+   
+
     var exam=[]
     var len=10;
     for(var i=0;i<val.length;i++)
@@ -161,27 +308,21 @@ this.props.history.push({
       <div className="finalone">
         <div className="fifa">
           <Welcome onSignOut={this.signOut.bind(this)} />
-          <form>
-            <center>
-            </center>
-            <center>
-              <button class="buttable">insert</button>
-            </center>
-          </form>
+          <center><button className="table_butt" onClick={this.togglePopup.bind(this)}>Insert</button></center>
           <Table data={exam} />
         </div>
         <div className="center">
-        <button className="newbutt"onClick={this.goback7.bind(this)}>1</button>
-    <button className="newbutt"onClick={this.goback6.bind(this)}>2</button>
-        <button className="newbutt"onClick={this.goback5.bind(this)}>3</button>
-        <button className="newbutt"onClick={this.goback4.bind(this)}>4</button>
-        <button className="newbutt"onClick={this.goback3.bind(this)}>5</button>
-        <button className="newbutt"onClick={this.goback2.bind(this)}>6</button>
-        <button className="newbutt"onClick={this.goback.bind(this)}>7</button>
-        <button className="newbutt"onClick={this.goback8.bind(this)}>8</button>        
-        <button className="newbutt"onClick={this.gonext.bind(this)}>9</button>
-    </div>
-
+        <ul class="pagination">
+              {renderPageNumbers}
+            </ul>
+           
+      {this.state.showPopup ? 
+          <Popup
+            closePopup={this.togglePopup.bind(this)}
+          />
+          : null
+        }
+      </div>
       </div>
     );
   }
@@ -190,8 +331,22 @@ this.props.history.push({
 
 
 
+
+
+
 class TableRow extends React.Component {
   
+constructor(props) {
+    super(props);
+    this.state = {
+      disable: true
+    };
+  }
+   
+
+  
+
+
 
 delete(data) {
 
@@ -208,52 +363,114 @@ const component = this;
       body: JSON.stringify(data)
     }).then(function(response) {      
     });
+    window.location.reload();
 
 }
   
 
+  Edit(data) {
+    console.log("edit value",data.id);
+
+this.setState({
+disable: false
+});
+this.id=data
+  }
+
+  handleSignIn(data) { 
+    const component = this; 
+    console.log(data);   
+    let tags = this.refs.tags.value
+    let category=this.refs.category.value
+    let images=this.refs.images.value
+    console.log("tags",tags);
+
+    var img = {
+      tags: tags,
+      category: category,
+      images: images,
+      id:data.id
+    };
+    fetch("http://localhost:3008/Save", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(img)
+    }).then(function(response) {      
+    });
+   
+   window.location.reload();
+
+  }
+
+  
+
   render() {
    
+    
     const {
       data
     } = this.props;
-    console.log("map value",data)
-    var vals=[]
-    for(var i=0;i<10;i++)
-    {
-    console.log("vals is data",vals);
-    const row = data.map((data) =>
-    <tr>
-    <td>{data.id}</td>
-            <td><img src={data.location} width="100" height="50" /></td>
+    console.log("val value is this",this.id);
+console.log("val disable ",this.state.disable);
+    const row = data.map((data) =>  
+     
+      data == this.id ?
+     <tr> 
+     <td>{data.id}</td>
+     <td><img src={data.location} width="100" height="50" /></td>
+    <td><input type="text" ref="tags" className="edit_txt" defaultValue={data.tags}/></td>
+    <td><input type="text" ref="category" className="edit_txt" defaultValue={data.type} /></td>
+    <td><input type="text" ref="images" className="edit_txt" defaultValue={data.location} /></td>  
+    <td> 
+       <img src={saveicon} onClick={()=>{this.handleSignIn(data)}} className="App-logo" alt="logo" />
+      </td>
+    </tr>
+:
+   <tr>        
+      <td>{data.id}</td>
+     <td><img src={data.location} width="100" height="50" /></td>
       <td>{data.tags}</td>
       <td>{data.type}</td>
-      <td>{data.location}</td>
-      <td><button onClick={()=>{this.delete(data)}}>delete</button></td>
+       <td>{data.location}</td>
+      <td><img src={deleteicon} onClick={()=>{this.delete(data)}} className="App-logo" alt="logo" />
+      <img src={editicon} onClick={()=>{this.Edit(data)}} className="App-logo" alt="logo" />
+      </td>
     </tr>
+
     );
     return row;
     }
   }
 
-}
+
+
 
 class Table extends React.Component {
  
-  constructor(props) {
-    super(props);
-   
+  constructor() {
+    super();
+    this.state = {
+      showPopup: false
+    };
+  }
+
+  togglePopup() {
+    this.setState({
+      showPopup: !this.state.showPopup
+    });
   }
 
   
   render() {
     return (
       <div>
-      <table>
+      <table id="customers">
       <thead>
             <tr>
-              <th>Id</th>
-              <th>picture</th>
+            <th>Id</th>
+            <th>picture</th>
               <th>tags</th>
               <th>category</th>
               <th>Images</th>
@@ -266,6 +483,7 @@ class Table extends React.Component {
                   </tbody>
 
       </table>
+
       </div>
     );
   }

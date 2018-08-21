@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "axios": "^0.18.0",
+    "free-google-image-search": "^1.0.0",
     "image-map": "^1.0.8",
     "react": "^16.4.0",
     "react-bootstrap-table": "^4.3.1",

@@ -127,7 +127,7 @@ const session = ({ fifa, onSignOut }) => {
   // });
 };
 
-class Home extends Component {
+class googlesrc extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -157,14 +157,12 @@ class Home extends Component {
       username: term,
       password: "456"
     };
-    fetch("http://localhost:3003/images", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
+    fetch("https://api.flickr.com/services/rest/?api_key=a1c4d1ff7f95e63effb5754ac37d9226&method=flickr.photos.search&text="+term+"&format=json", {
+      method: "POST"
     }).then(function(response) {
-      return response.json().then(function(body) {
+      return response.json()
+      .then(function(body) {
+        console.log("response is",response.data);
         if (body == "") {
           console.log("no values came%%%%");
         } else {
@@ -232,4 +230,4 @@ this.props.history.push({
     );
   }
 }
-export default Home;
+export default googlesrc;

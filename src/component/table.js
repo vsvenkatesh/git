@@ -7,7 +7,10 @@ import trash from './trash.png';
 import save from './save.png';
 import add from './add.png';
 import trash2 from './trash2.png';
-
+import saveicon from './saveicon.svg';
+import editicon from './editicon.svg';
+import deleteicon from './deleteicon.svg';
+import GoogleImageSearch from 'free-google-image-search'
 
 
 
@@ -28,16 +31,180 @@ class Welcome extends React.Component {
 
 
 
+class Popup extends React.Component {
+
+  handleSignIn(e) {
+    e.preventDefault();
+    let term = this.refs.username.value;
+    fetch("https://api.flickr.com/services/rest/?api_key=a1c4d1ff7f95e63effb5754ac37d9226&method=flickr.photos.search&text="+term+"&format=json", {
+      method: "POST"
+    }).then(function(response) {
+      console.log("response is",response);
+      
+    });
+  }
+
+  render() {
+    return (
+      <div className='popups'>
+        <div className='popup_inner'>
+          <h1>{this.props.text}</h1>
+          <form onSubmit={this.handleSignIn.bind(this)}>
+            <center>
+              <input
+                type="text"
+                id="box"
+                ref="username"
+                placeholder="Image"
+              />
+            </center>
+            <center>
+              <button class="button">Search</button>
+            </center>
+
+          </form>
+        <button onClick={this.props.closePopup}>close me</button>
+        </div>
+      </div>
+    );
+  }
+}
+
+
+class Popups extends React.Component {
+
+ constructor() {
+    super();
+    this.state = {
+      showPopup: false
+    };
+  }
+
+handleSignIn(number) { 
+    const component = this; 
+    console.log(number);   
+    let tags = this.refs.tags.value
+    let category=this.refs.category.value
+    let images=this.refs.images.value
+    console.log("tags",tags);
+
+    var img = {
+      tags: tags,
+      category: category,
+      images: images
+    };
+    fetch("http://localhost:3008/Insert", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(img)
+    }).then(function(response) {      
+    });
+   
+   window.location.reload();
+
+  }
+
+  togglePopup() {
+    this.setState({
+      showPopup: !this.state.showPopup
+    });
+  }
+
+  render() {
+    return (
+      <div className='popup'>
+        <div className='popup_inner'>
+        <button onClick={this.togglePopup.bind(this)}>Google serach</button>
+         <input type="text" id="popup_class" placeholder="tags" ref="tags" name="name" />
+         <input type="text" id="popup_class" placeholder="category" ref="category" name="name" />
+         <input type="text" id="popup_class" placeholder="image" ref="images" name="name" />
+         <button id="popup_bt1" onClick={this.handleSignIn.bind(this)}>Insert</button>
+        <button id="popup_bt2" onClick={this.props.closePopup}>close</button>
+
+         {this.state.showPopup ? 
+          <Popup
+            text='Close Me'
+            closePopup={this.togglePopup.bind(this)}
+          />
+          : null
+        }
+        </div>
+      </div>
+    );
+  }
+}
+
+
+
+class googlesearch extends React.Component {
+
+
+
+handleSignIn(number) { 
+    const component = this; 
+    console.log(number);   
+    let tags = this.refs.tags.value
+    let category=this.refs.category.value
+    let images=this.refs.images.value
+    console.log("tags",tags);
+
+    var img = {
+      tags: tags,
+      category: category,
+      images: images
+    };
+    fetch("http://localhost:3008/Insert", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(img)
+    }).then(function(response) {      
+    });
+   
+   window.location.reload();
+
+  }
+
+
+  render() {
+    return (
+      <div className='popup'>
+        <div className='popup_inner'>
+         <input type="text" id="popup_class" placeholder="tags" ref="tags" name="name" />
+        </div>
+      </div>
+    );
+  }
+}
+
+
+
+
+
+
 
 export default class table extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
       term: "",
       final: "",
-      count:""
-    };
+      count:"",
+      showPopup: false
+    }
+    
   }
+
+  togglePopup() {
+    this.setState({
+      showPopup: !this.state.showPopup
+    });
+  }
+  
 
   componentWillMount() {
     const component = this; 
@@ -65,6 +232,10 @@ export default class table extends Component {
         });
       });
     });
+    GoogleImageSearch.searchImage("cats")
+.then((res) => {
+    console.log("google image URLs",res); // This will return array of image URLs
+})
    }
 
 componentDidMount() {
@@ -170,6 +341,19 @@ this.props.history.push({
 
   }
  
+
+ changeid(number) {
+
+console.log("now the id is",number);
+
+
+this.props.history.push({
+            pathname: "/add-imagess/imgs/"+number,
+            table: this.state.table
+          })
+
+
+ }
  
 
   render() {
@@ -180,16 +364,39 @@ this.props.history.push({
       ? this.props.location.table
       : this.state.count;
     console.log("the big count is ",total);
-    var obj = JSON.parse(total)
-    console.log("the big count is ",total[0].count);
+    var test=total[0];
+    if(test){
+          console.log("test is ",test.count);
+          var pageno=( test.count/ val.length);
+console.log("pageno is",Math.ceil(pageno));
 var pageNumbers=[]
-var pageno=(90 / val.length);
-console.log("pageno",pageno);
-for (let i = 1; i <= Math.ceil(total / val.length); i++) {
+console.log("length is",val.length);
+for (let i = 1; i <= Math.ceil(test.count/ 10); i++) {
           pageNumbers.push(i);
-
         }
-        console.log("i is",i);
+
+        console.log("i is",pageNumbers);
+
+ } 
+
+var renderPageNumbers
+    pageNumbers ? 
+        renderPageNumbers = pageNumbers.map(number => {
+          return (
+            <li
+              key={number}
+              id={number}
+               onClick={()=>{this.changeid(number)}}
+            >
+              {number}
+            </li>
+          );
+            })
+
+            : null
+
+
+   
 
     var exam=[]
     var len=10;
@@ -215,19 +422,23 @@ for (let i = 1; i <= Math.ceil(total / val.length); i++) {
       <div className="finalone">
         <div className="fifa">
           <Welcome onSignOut={this.signOut.bind(this)} />
-          <form>
-            <center>
-            </center>
-            <center>
-              <button class="buttable">insert</button>
-            </center>
-          </form>
+          
+          <center><button className="table_butt" onClick={this.togglePopup.bind(this)}>Insert</button></center>
           <Table data={exam} />
         </div>
         <div className="center">
-        <button className="newbutt"onClick={this.goback7.bind(this)}>1</button>
-        
+        <ul class="pagination">
+              {renderPageNumbers}
+            </ul>
+
       </div>
+
+      {this.state.showPopup ? 
+          <Popups
+            closePopup={this.togglePopup.bind(this)}
+          />
+          : null
+        }
       </div>
     );
   }
@@ -322,11 +533,11 @@ console.log("val disable ",this.state.disable);
      <tr> 
      <td>{data.id}</td>
      <td><img src={data.location} width="100" height="50" /></td>
-    <td><input type="text" ref="tags" defaultValue={data.tags}/></td>
-    <td><input type="text" ref="category" defaultValue={data.type} /></td>
-    <td><input type="text" ref="images" defaultValue={data.location} /></td>  
+    <td><input type="text" className="edit_box" ref="tags" defaultValue={data.tags}/></td>
+    <td><input type="text" className="edit_box" ref="category" defaultValue={data.type} /></td>
+    <td><input type="text" className="edit_box" ref="images" defaultValue={data.location} /></td>  
     <td> 
-       <img src={save} onClick={()=>{this.handleSignIn(data)}} className="App-logo" alt="logo" />
+       <img src={saveicon} onClick={()=>{this.handleSignIn(data)}} className="App-logo" alt="logo" />
       </td>
     </tr>
 :
@@ -336,8 +547,8 @@ console.log("val disable ",this.state.disable);
       <td>{data.tags}</td>
       <td>{data.type}</td>
        <td>{data.location}</td>
-      <td><img src={trash2} onClick={()=>{this.delete(data)}} className="App-logo" alt="logo" />
-      <img src={icon1} onClick={()=>{this.Edit(data)}} className="App-logo" alt="logo" />
+      <td><img src={deleteicon} onClick={()=>{this.delete(data)}} className="App-logo" alt="logo" />
+      <img src={editicon} onClick={()=>{this.Edit(data)}} className="App-logo" alt="logo" />
       </td>
     </tr>
 
@@ -353,18 +564,8 @@ console.log("val disable ",this.state.disable);
 
 
 
-class Popup extends React.Component {
-  render() {
-    return (
-      <div className='popup'>
-        <div className='popup_inner'>
-          <h1>{this.props.text}</h1>
-        <button onClick={this.props.closePopup}>close me</button>
-        </div>
-      </div>
-    );
-  }
-}
+
+
 
 
 class Table extends React.Component {
