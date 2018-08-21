@@ -1,6 +1,8 @@
 var express = require("express");
 var bodyParser = require("body-parser");
 var app = express();
+var sha256 = require('sha256');
+
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -37,25 +39,15 @@ pool.connect(function(err, client, done) {
     console.log("this is", req.body);
     var user_name = req.body.username;
     var password=req.body.password;
-    console.log("User name = " + user_name + "");
+    var md=sha256(password);
+    console.log("User name = " + user_name + "",md);
     client.query(
-      "SELECT * FROM users WHERE fname = '" + user_name + "'",
+      "SELECT * FROM users WHERE fname = '" + user_name + "' AND password ='"+md+"'",
       function(err, result, fields) {
         if (err) throw err;
         var obj = { users: result.rows };
         console.log(result.rows);
         res.send(result.rows);
-        //res.end("success");
-      }
-    );
-    console.log("password is",password);
-    client.query(
-      "SELECT * FROM users WHERE fname = '" + password + "'",
-      function(err, result, fields) {
-        if (err) throw err;
-        var obj = { users: result.rows };
-        console.log(result.rows);
-        //res.send(result.rows);
         //res.end("success");
       }
     );
